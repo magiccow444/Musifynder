@@ -69,7 +69,7 @@ def register():
         username = request.form['username']
         password = request.form['password']
         createUser(username, password)
-        return "User created successfully!"
+        return render_template('index.html')
     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -78,10 +78,10 @@ def login():
         username = request.form['username']
         password = request.form['password']
         if verifyUser(username, password):
-            return "Login was successful!"
+            return render_template('index.html')
         else:
-            return "Login failed!"         
+            return "Login failed!"
     return render_template('login.html')
 
-if __name__ == 'main':
+if __name__ == '__main__':
     app.run(debug=True)
