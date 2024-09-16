@@ -82,10 +82,16 @@ sp_oauth = SpotifyOAuth(client_id = SPOTIPY_CLIENT_ID,
 
 @app.route('/')
 def home():
-    token_info = session.get('token_info', None)
+    token_info = get_token()
 
     if (not token_info):
         return redirect(url_for('login'))
+    
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+
+    user_profile = sp.current_user()
+
+    return render_template('index.html', user=user_profile)
 
 # @app.route('/register' , methods=['GET', 'POST'])
 # def register():
@@ -97,7 +103,7 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    auth_url = sp_oauth.get_authorized_url()
+    auth_url = sp_oauth.get_authorize_url()
     return redirect(auth_url)    
 
     # if request.method == 'POST':
@@ -109,6 +115,11 @@ def login():
     #         return "Login failed!"
     # return render_template('login.html')
 
+@app.route('/logout')
+def logout():
+    session.pop('token_info', None)
+    return redirect(url_for('home'))
+
 @app.route('/callback')
 def callback():
     code = request.args.get('code')
@@ -116,6 +127,18 @@ def callback():
     session['token_info'] = tokenInfo
 
     return redirect(url_for('home'))
+
+def get_token():
+    token_info = session.get('token_info', None)
+
+    if (not token_info):
+        return None
+    
+    if sp_oauth.is_token_expired(token_info):
+        token_info = sp_oauth.refresh_access_token(token_info['refresh_token'])
+        session['token_info'] = token_info
+
+    return token_info
 
 if __name__ == '__main__':
     app.run(debug=True)
