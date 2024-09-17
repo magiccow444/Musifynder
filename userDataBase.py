@@ -22,28 +22,47 @@ sp_oauth = SpotifyOAuth(client_id = SPOTIPY_CLIENT_ID,
                         redirect_uri = SPOTIPY_REDIRECT_URI,
                         scope = 'user-library-read user-top-read user-read-email user-read-private')
 
-@app.route('/')
-def home():
-    token_info = get_token()
+def is_token_valid():
+    token_info = session.get('token_info', None)
 
     if (not token_info):
-        return redirect(url_for('login'))
+        return False
     
-    sp = spotipy.Spotify(auth=token_info['access_token'])
+    if sp_oauth.is_token_expired(token_info):
+        token_info = sp_oauth.refresh_access_token(token_info['refresh_token'])
+        session['token_info'] = token_info
+        
+    return True
+
+
+@app.route('/')
+def home(): 
+    return render_template('index.html')
+
+@app.route('/profile')
+def profile():
+    if (not is_token_valid):
+        return redirect(url_for('login'))   
+    
+    sp = spotipy.Spotify(auth=session.get('token_info')['access_token'])
 
     user_profile = sp.current_user()
 
-    return render_template('index.html', user=user_profile)
+    return render_template('profile.html', user=user_profile)
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login')
 def login():
-    auth_url = sp_oauth.get_authorize_url()
-    return redirect(auth_url)    
+    if (is_token_valid()):
+        return redirect(url_for('profile'))
+
+    else:
+        auth_url = sp_oauth.get_authorize_url()
+        return redirect(auth_url)    
 
 @app.route('/logout')
 def logout():
 
-    session.pop('token_info', None)
+    # session.pop('token_info', None)
     session.clear()
 
     session.modified = True
@@ -59,17 +78,6 @@ def callback():
 
     return redirect(url_for('home'))
 
-def get_token():
-    token_info = session.get('token_info', None)
-
-    if (not token_info):
-        return None
-    
-    if sp_oauth.is_token_expired(token_info):
-        token_info = sp_oauth.refresh_access_token(token_info['refresh_token'])
-        session['token_info'] = token_info
-
-    return token_info
 
 if __name__ == '__main__':
     app.run(debug=True)

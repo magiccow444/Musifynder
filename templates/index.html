@@ -9,23 +9,10 @@
     <h1>Musifynder</h1>
     <h3>Welcome to Musifynder! Please login to continue.</h3>
     <br>
-
-    {% if 'user' in session %}
-        <h3>Welcome, {{ user['display_name'] }}</h3>
-
-        <p>Here's some of your Spotify info:</p>
-        <ul>
-            <li>Username: {{ user['id'] }}</li>
-            <li>Email: {{ user['email'] }}</li>
-            <li>Country: {{ user['country'] }}</li>
-        </ul>
-        <br>
-        <a href="{{ url_for('logout') }}">Logout</a>
-    {% else %}
-        
+  
         <p>You are not logged in:</p>
-        <a href="/login">Login with another Spotify account</a>
-    {% endif %}
+        <a href="/login">Login with Spotify account</a> <br>
+        <a href="/logout">Logout</a>
     
 </body>
 </html>

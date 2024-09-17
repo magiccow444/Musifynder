@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+</head>
+<body>
+    <h1>Musifynder Profile</h1>
+    <br>
+
+    <h3>Welcome {{ user['display_name'] }}</h3>
+    
+    <p>Here's some of your Spotify info:</p>
+    <ul>
+        <li>Username: {{ user['id'] }}</li>
+        <li>Email: {{ user['email'] }}</li>
+        <li>Country: {{ user['country'] }}</li>
+    </ul>
+    <br>
+
+    <a href="/logout">Logout</a>
+
+</body>
+</html>
