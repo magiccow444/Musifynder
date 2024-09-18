@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Top Tracks</title>
+</head>
+<body>
+    <h1>Your top tracks:</h1>
+    <br>    
+
+    <form action="/top-tracks" method="get">
+        <button type="submit" name="time_range" value="short_term">Last 4 weeks</button>
+        <button type="submit" name="time_range" value="medium_term">Last 6 months</button>
+        <button type="submit" name="time_range" value="long_term">All time</button>
+
+    </form>
+
+    {% if time_range == 'short_term' %}
+        <p>Here are your top tracks from the past 4 weeks:</p>
+    {% elif time_range == 'medium_term' %}
+        <p>Here are your top tracks from the past 6 months:</p>
+    {% else %}
+        <p>Here are your top tracks of all time:</p>
+    {% endif %}
+
+    <ul>
+        {% for idx, track in top_tracks %}
+            <li>{{ idx + 1 }}. {{ track['name'] }} by {{ ','.join(track['artists']) }}</li>
+        {% endfor %}
+    </ul>
+    
+    <a href="/profile">Back to profile</a>
+
+</body>
+</html>

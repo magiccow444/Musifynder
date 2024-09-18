@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for, session
+from flask_sqlalchemy import SQLAlchemy
 import os
 import sqlite3
 import bcrypt
@@ -33,7 +34,6 @@ def is_token_valid():
         session['token_info'] = token_info
         
     return True
-
 
 @app.route('/')
 def home(): 
@@ -78,6 +78,26 @@ def callback():
 
     return redirect(url_for('home'))
 
+@app.route('/top-tracks')
+def top_tracks():
+    if (not is_token_valid()):
+        return redirect(url_for('login'))
+    
+    sp = spotipy.Spotify(auth=session.get('token_info')['access_token'])
+
+    time_range = request.args.get('time_range', 'short_term')
+
+    top_tracks_data = sp.current_user_top_tracks(limit=5, time_range=time_range)
+
+    top_tracks = []
+    for track in top_tracks_data['items']:
+        track_info = {
+            'name': track['name'],
+            'artists': [artist['name'] for artist in track['artists']]
+        }
+        top_tracks.append(track_info)
+
+    return render_template('topTracks.html', top_tracks=enumerate(top_tracks))
 
 if __name__ == '__main__':
     app.run(debug=True)
