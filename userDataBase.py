@@ -97,7 +97,7 @@ def top_tracks():
         }
         top_tracks.append(track_info)
 
-    return render_template('topTracks.html', top_tracks=enumerate(top_tracks))
+    return render_template('topTracks.html', top_tracks=enumerate(top_tracks), time_range=time_range)
 
 if __name__ == '__main__':
     app.run(debug=True)
