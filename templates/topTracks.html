@@ -26,7 +26,7 @@
 
     <ul>
         {% for idx, track in top_tracks %}
-            <li>{{ idx + 1 }}. {{ track['name'] }} by {{ ','.join(track['artists']) }}</li>
+            <li>{{ idx + 1 }}. {{ track['name'] }} by {{ ', '.join(track['artists']) }}</li>
         {% endfor %}
     </ul>
     

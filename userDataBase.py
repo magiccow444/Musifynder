@@ -1,11 +1,13 @@
 from flask import Flask, request, render_template, redirect, url_for, session
-from flask_sqlalchemy import SQLAlchemy
+from models import User, Track, db
+from spotipy.oauth2 import SpotifyOAuth
+from sqlalchemy.exc import IntegrityError
+
 import os
 import sqlite3
 import bcrypt
 import spotipy
 import requests
-from spotipy.oauth2 import SpotifyOAuth
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_API_KEY')
@@ -22,6 +24,34 @@ sp_oauth = SpotifyOAuth(client_id = SPOTIPY_CLIENT_ID,
                         client_secret = SPOTIPY_CLIENT_SECRET,
                         redirect_uri = SPOTIPY_REDIRECT_URI,
                         scope = 'user-library-read user-top-read user-read-email user-read-private')
+
+# ********** DATABASE **********
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///userDataBase.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db.init_app(app)
+
+with app.app_context():
+    db.create_all()
+
+def add_user_tracks(user_id, user_top_tracks):
+    user = User.query.get(user_id)
+    if not user:
+        raise ValueError("User not found")
+    
+    for track in user_top_tracks['items']:
+        track_name = track['name']
+        artist_name = track['artists'][0]['name']
+
+        existing_track = Track.query.filter_by(name=track_name, artist=artist_name, user_id=user_id).first()
+        if not existing_track:
+            new_track = Track(name=track_name, artist=artist_name, user_id=user_id)
+            db.session.add(new_track)
+
+    db.session.commit()
+
+# ********** ROUTES **********
 
 def is_token_valid():
     token_info = session.get('token_info', None)
@@ -47,6 +77,24 @@ def profile():
     sp = spotipy.Spotify(auth=session.get('token_info')['access_token'])
 
     user_profile = sp.current_user()
+
+    new_user = User(username=user_profile['display_name'], email=user_profile['email'])
+
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+        print('User added')
+    except IntegrityError:
+        db.session.rollback()
+        print('User already exists')    
+
+    top_tracks_data = sp.current_user_top_tracks(limit=5, time_range='short_term')
+
+    user = User.query.filter_by(username=user_profile['display_name']).first()
+
+    print("THIS IS THE USER ID ************** ", user.id, 54)
+
+    add_user_tracks(user.id, top_tracks_data)
 
     return render_template('profile.html', user=user_profile)
 
@@ -96,8 +144,14 @@ def top_tracks():
             'artists': [artist['name'] for artist in track['artists']]
         }
         top_tracks.append(track_info)
-
+    
     return render_template('topTracks.html', top_tracks=enumerate(top_tracks), time_range=time_range)
+
+@app.route('/group-top-songs')
+def group_top_songs():
+    all_tracks = Track.query.all()
+
+    return render_template('groupTopSongs.html', tracks=all_tracks)
 
 if __name__ == '__main__':
     app.run(debug=True)

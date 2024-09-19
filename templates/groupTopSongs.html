@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Group Top Tracks</title>
+</head>
+<body>
+    <h1>Your groups top tracks are:</h1>
+    
+    <ul>
+        {% for track in tracks %}
+            <li>{{ track.name }} by {{ track.artist }} </li>
+        {% endfor %}
+    </ul>
+
+    <a href="/profile">Back to profile</a>
+
+</body>
+</html>
