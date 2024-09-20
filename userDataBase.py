@@ -8,6 +8,7 @@ import sqlite3
 import bcrypt
 import spotipy
 import requests
+import random
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_API_KEY')
@@ -88,11 +89,9 @@ def profile():
         db.session.rollback()
         print('User already exists')    
 
-    top_tracks_data = sp.current_user_top_tracks(limit=5, time_range='short_term')
+    top_tracks_data = sp.current_user_top_tracks(limit=3, time_range='short_term')
 
     user = User.query.filter_by(username=user_profile['display_name']).first()
-
-    print("THIS IS THE USER ID ************** ", user.id, 54)
 
     add_user_tracks(user.id, top_tracks_data)
 
@@ -150,6 +149,8 @@ def top_tracks():
 @app.route('/group-top-songs')
 def group_top_songs():
     all_tracks = Track.query.all()
+
+    random.shuffle(all_tracks)
 
     return render_template('groupTopSongs.html', tracks=all_tracks)
 
