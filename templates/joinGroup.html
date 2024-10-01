@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Group</title>
+</head>
+<body>
+    <h1>Join a Group:</h1>
+    <form action="/join_group" method="POST">
+        <label for="group_id">Select Group:</label>
+        <select id="group_id" name="group_id">
+            {% for group in groups %}
+                <option value="{{ group.id }}">{{ group.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Join Group</button>
+    </form>
+</body>
+</html>

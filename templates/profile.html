@@ -16,11 +16,14 @@
         <li>Username: {{ user['id'] }}</li>
         <li>Email: {{ user['email'] }}</li>
         <li>Country: {{ user['country'] }}</li>
+        <li>Group: {{ group.name }}</li>
     </ul>
     <br>
 
     <a href="/top-tracks">View your top tracks</a> <br>
-    <a href="/group-top-songs">View others' top tracks</a> <br>
+    <a href="/create_group">Create a group</a> <br>
+    <a href="/join_group">Join a group</a> <br>
+    <a href="/group-top-songs">View group's top tracks</a> <br>
     <a href="/logout">Logout</a>
 
 </body>

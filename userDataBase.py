@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for, session
-from models import User, Track, db
+from models import User, Track, Group, db
 from spotipy.oauth2 import SpotifyOAuth
 from sqlalchemy.exc import IntegrityError
 
@@ -95,7 +95,9 @@ def profile():
 
     add_user_tracks(user.id, top_tracks_data)
 
-    return render_template('profile.html', user=user_profile)
+    group = Group.query.get(user.group_id)
+
+    return render_template('profile.html', user=user_profile, group=group)
 
 @app.route('/login')
 def login():
@@ -168,6 +170,31 @@ def submit_guesses():
         totalGuesses += 1
 
     return f"You got {correctGuesses} out of {totalGuesses} correct!"
+
+@app.route('/create_group', methods=['POST', 'GET'])
+def create_group():
+    if request.method == 'POST':
+        group_name = request.form['group_name']
+        new_group = Group(name=group_name)
+        db.session.add(new_group)
+        db.session.commit()
+        return redirect(url_for('profile'))
+    return render_template('createGroup.html')
+
+@app.route('/join_group', methods=['POST', 'GET'])
+def join_group():
+    if request.method == 'POST':
+        sp = spotipy.Spotify(auth=session.get('token_info')['access_token'])
+        user_profile = sp.current_user()
+        user = User.query.filter_by(username=user_profile['display_name']).first()
+
+        group_id = request.form['group_id']
+        user.group_id = group_id
+        db.session.commit()
+        return redirect(url_for('profile'))
+    
+    groups = Group.query.all()
+    return render_template('joinGroup.html', groups=groups)
 
 if __name__ == '__main__':
     app.run(debug=True)
