@@ -148,11 +148,26 @@ def top_tracks():
 
 @app.route('/group-top-songs')
 def group_top_songs():
+    all_users = User.query.all()
     all_tracks = Track.query.all()
 
     random.shuffle(all_tracks)
 
-    return render_template('groupTopSongs.html', tracks=all_tracks)
+    return render_template('groupTopSongs.html', tracks=all_tracks, users=all_users)
+
+@app.route('/submit_guesses', methods=['POST']) 
+def submit_guesses():
+    correctGuesses = 0
+    totalGuesses = 0
+
+    for track_id, guesses_user_id in request.form.items():
+        track = Track.query.get(int(track_id))
+
+        if (track.user_id == int(guesses_user_id)):
+            correctGuesses += 1
+        totalGuesses += 1
+
+    return f"You got {correctGuesses} out of {totalGuesses} correct!"
 
 if __name__ == '__main__':
     app.run(debug=True)
