@@ -4,33 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Top Tracks</title>
+    <style>
+        body {
+            background-color: white; 
+            color: black; 
+        }
+        h1 {
+            text-align: center; 
+            margin-top: 30px; 
+        }
+        .track-list {
+            margin-top: 20px; 
+        }
+        .track-list li {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6; 
+        }
+        .btn {
+            margin: 5px;
+            border-radius: 25px;
+            padding: 10px 20px; 
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .btn-primary {
+            background-color: #007bff; 
+            border: none;
+            color: white; 
+        }
+        .btn-primary:hover {
+            background-color: #0056b3; 
+            transform: translateY(-2px);
+        }
+        .back-link {
+            display: block; 
+            text-align: center; 
+            margin-top: 20px;
+            color: #007bff; 
+            text-decoration: none; 
+        }
+        .back-link:hover {
+            text-decoration: underline; 
+        }
+    </style>
 </head>
 <body>
-    <h1>Your top tracks:</h1>
-    <br>    
 
-    <form action="/top-tracks" method="get">
-        <button type="submit" name="time_range" value="short_term">Last 4 weeks</button>
-        <button type="submit" name="time_range" value="medium_term">Last 6 months</button>
-        <button type="submit" name="time_range" value="long_term">All time</button>
-
-    </form>
-
-    {% if time_range == "short_term" %}
-        <p>Here are your top tracks from the past 4 weeks:</p>
-    {% elif time_range == "medium_term" %}
-        <p>Here are your top tracks from the past 6 months:</p>
-    {% else %}
-        <p>Here are your top tracks of all time:</p>
-    {% endif %}
-
-    <ul>
-        {% for idx, track in top_tracks %}
-            <li>{{ idx + 1 }}. {{ track['name'] }} by {{ ', '.join(track['artists']) }}</li>
-        {% endfor %}
-    </ul>
+    <h1>Your Top Tracks:</h1>
     
-    <a href="/profile">Back to profile</a>
+    <div class="container mt-5 text-center">
+        <form action="/top-tracks" method="get" class="mb-4">
+            <button type="submit" name="time_range" value="short_term" class="btn btn-primary">Last 4 Weeks</button>
+            <button type="submit" name="time_range" value="medium_term" class="btn btn-primary">Last 6 Months</button>
+            <button type="submit" name="time_range" value="long_term" class="btn btn-primary">All Time</button>
+        </form>
 
+        {% if time_range == "short_term" %}
+            <h3>Here are your top tracks from the past 4 weeks:</h3>
+        {% elif time_range == "medium_term" %}
+            <h3>Here are your top tracks from the past 6 months:</h3>
+        {% else %}
+            <h3>Here are your top tracks of all time:</h3>
+        {% endif %}
+
+        <ul class="track-list list-unstyled">
+            {% for idx, track in top_tracks %}
+                <li>{{ idx + 1 }}. {{ track['name'] }} by {{ ', '.join(track['artists']) }}</li>
+            {% endfor %}
+        </ul>
+        
+        <a href="/profile" class="back-link">Back to Profile</a>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>

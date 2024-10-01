@@ -41,6 +41,11 @@ def add_user_tracks(user_id, user_top_tracks):
     if not user:
         raise ValueError("User not found")
     
+    tracks_to_delete = Track.query.filter_by(user_id=user_id).all()
+    for track in tracks_to_delete:
+        db.session.delete(track)
+    db.session.commit()
+    
     for track in user_top_tracks['items']:
         track_name = track['name']
         artist_name = track['artists'][0]['name']
@@ -150,12 +155,18 @@ def top_tracks():
 
 @app.route('/group-top-songs')
 def group_top_songs():
-    all_users = User.query.all()
-    all_tracks = Track.query.all()
+    sp = spotipy.Spotify(auth=session.get('token_info')['access_token'])
+    user_profile = sp.current_user()
+    user = User.query.filter_by(username=user_profile['display_name']).first()
 
-    random.shuffle(all_tracks)
+    group_users = User.query.filter_by(group_id=user.group_id).all()
+    group_user_ids = [group_user.id for group_user in group_users]
+   
+    group_tracks = Track.query.filter(Track.user_id.in_(group_user_ids)).all()
 
-    return render_template('groupTopSongs.html', tracks=all_tracks, users=all_users)
+    random.shuffle(group_tracks)
+
+    return render_template('groupTopSongs.html', tracks=group_tracks, users=group_users)
 
 @app.route('/submit_guesses', methods=['POST']) 
 def submit_guesses():
@@ -175,7 +186,14 @@ def submit_guesses():
 def create_group():
     if request.method == 'POST':
         group_name = request.form['group_name']
+
+        existingGroup = Group.query.filter_by(name=group_name).first()
+
+        if existingGroup:
+            return redirect(url_for('profile'))
+        
         new_group = Group(name=group_name)
+
         db.session.add(new_group)
         db.session.commit()
         return redirect(url_for('profile'))
@@ -195,6 +213,19 @@ def join_group():
     
     groups = Group.query.all()
     return render_template('joinGroup.html', groups=groups)
+
+@app.route('/delete_group', methods=['POST', 'GET'])
+def delete_group():
+    if request.method == 'POST':
+        group_id = request.form['group_id']
+        groupToDelete = Group.query.get(group_id) 
+        db.session.delete(groupToDelete)
+        db.session.commit()
+        return redirect(url_for('profile'))
+
+    groups = Group.query.all()
+    return render_template('deleteGroup.html', groups=groups)
+    
 
 if __name__ == '__main__':
     app.run(debug=True)

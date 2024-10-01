@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Group Top Tracks</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
 </head>
 <body>
     <h1>Your groups top tracks are:</h1>
@@ -14,20 +16,24 @@
     <form method="POST" action="{{ url_for('submit_guesses') }}">
         {% for track in tracks %}
             <div>
+                <br>
                 <p>Track: {{ track.name }} by {{ track.artist }}</p>
                 <label for="{{ track.id }}">Who does this song belong to?</label>
                 <select name="{{ track.id }}">
                     {% for user in users %}
                         <option value="{{ user.id }}">{{ user.username }}</option>
                     {% endfor %}
+                <br>
                 </select>
             </div>
         {% endfor %}
         <br>
-        <button type="submit">Submit Guesses</button>
+        <button type="submit" class="btn btn-primary">Submit Guesses</button>
     </form>
     <br>
     <a href="/profile">Back to profile</a>
+
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 
 </body>
 </html>

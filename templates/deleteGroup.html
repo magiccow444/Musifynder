@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Group</title>
+</head>
+<body>
+    <h1>Delete a Group:</h1>
+    <form action="/delete_group" method="POST">
+        <label for="group_id">Select Group:</label>
+        <select id="group_id" name="group_id">
+            {% for group in groups %}
+                <option value="{{ group.id }}">{{ group.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Delete Group</button>
+    </form>
+</body>
+</html>

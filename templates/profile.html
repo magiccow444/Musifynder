@@ -4,27 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
 </head>
 <body>
-    <h1>Musifynder Profile</h1>
-    <br>
 
-    <h3>Welcome {{ user['display_name'] }}</h3>
-    
-    <p>Here's some of your Spotify info:</p>
-    <ul>
-        <li>Username: {{ user['id'] }}</li>
-        <li>Email: {{ user['email'] }}</li>
-        <li>Country: {{ user['country'] }}</li>
-        <li>Group: {{ group.name }}</li>
-    </ul>
-    <br>
 
-    <a href="/top-tracks">View your top tracks</a> <br>
-    <a href="/create_group">Create a group</a> <br>
-    <a href="/join_group">Join a group</a> <br>
-    <a href="/group-top-songs">View group's top tracks</a> <br>
-    <a href="/logout">Logout</a>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/profile">Musifynder</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
+    <!-- Main Content -->
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <!-- Profile Card -->
+                <div class="card text-center">
+                    <div class="card-header">
+                        <h1 class="card-title">Musifynder Profile</h1>
+                    </div>
+                    <div class="card-body">
+                        <h3>Welcome, {{ user['display_name'] }}!</h3>
+                        <p class="card-text">Here's some of your Spotify info:</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Username: {{ user['id'] }}</li>
+                            <li class="list-group-item">Email: {{ user['email'] }}</li>
+                            <li class="list-group-item">Country: {{ user['country'] }}</li>
+                            <li class="list-group-item">Group: {{ group.name }}</li>
+                        </ul>
+                        <div class="mt-4">
+                            <a href="/top-tracks" class="btn btn-primary">View your top tracks</a>
+                            <a href="/create_group" class="btn btn-success">Create a group</a>
+                            <a href="/delete_group" class="btn btn-danger">Delete a group</a>
+                            <a href="/join_group" class="btn btn-info">Join a group</a>
+                            <a href="/group-top-songs" class="btn btn-warning">View group's top tracks</a>
+                        </div>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <a href="/logout" class="btn btn-danger">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>
+
