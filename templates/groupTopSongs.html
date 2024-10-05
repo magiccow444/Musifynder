@@ -13,6 +13,12 @@
     
     <hr>
 
+    {% if correctGuesses is defined %}
+    <h2>Your score: {{ correctGuesses }} / {{ totalGuesses }} </h2>
+    {% else %}
+        <h2>You haven't guessed yet!</h2>
+    {% endif %}
+
     <form method="POST" action="{{ url_for('submit_guesses') }}">
         {% for track in tracks %}
             <div>
@@ -31,6 +37,7 @@
         <button type="submit" class="btn btn-primary">Submit Guesses</button>
     </form>
     <br>
+
     <a href="/profile">Back to profile</a>
 
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>

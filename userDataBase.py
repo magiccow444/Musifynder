@@ -180,7 +180,19 @@ def submit_guesses():
             correctGuesses += 1
         totalGuesses += 1
 
-    return f"You got {correctGuesses} out of {totalGuesses} correct!"
+    sp = spotipy.Spotify(auth=session.get('token_info')['access_token'])
+    user_profile = sp.current_user()
+    user = User.query.filter_by(username=user_profile['display_name']).first()
+
+    group_users = User.query.filter_by(group_id=user.group_id).all()
+    group_user_ids = [group_user.id for group_user in group_users]
+   
+    group_tracks = Track.query.filter(Track.user_id.in_(group_user_ids)).all()
+
+    random.shuffle(group_tracks)
+
+    return render_template('groupTopSongs.html', tracks=group_tracks, users=group_users, correctGuesses=correctGuesses, totalGuesses=totalGuesses)
+    # return f"You got {correctGuesses} out of {totalGuesses} correct!"
 
 @app.route('/create_group', methods=['POST', 'GET'])
 def create_group():
