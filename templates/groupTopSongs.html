@@ -5,42 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Group Top Tracks</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-
+    <style>
+        body {
+            background-color: #f8f9fa; 
+        }
+    </style>
 </head>
 <body>
-    <h1>Your groups top tracks are:</h1>
-    <h2>Now guess whose is whose!!</h2>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/profile">Musifynder</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/create_group" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Groups
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="/create_group">Add Group</a></li>
+                        <li><a class="dropdown-item" href="/join_group">Join Group</a></li>
+                        <li><a class="dropdown-item" href="/delete_group">Delete Group</a></li>
+                    </ul>
+                </li>
     
-    <hr>
+                <li class="nav-item">
+                    <a class="nav-link" href="/top-tracks">Your Top Tracks</a>
+                </li>
+    
+                <li class="nav-item">
+                    <a class="nav-link" href="/group-top-songs">Your Group's Top Tracks</a>
+                </li>
+    
+                <li class="nav-item">
+                    <a class="nav-link" href="/groups_scores">Group Scores</a>
+                </li>
+    
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-    {% if correctGuesses is defined %}
-    <h2>Your score: {{ correctGuesses }} / {{ totalGuesses }} </h2>
-    {% else %}
-        <h2>You haven't guessed yet!</h2>
-    {% endif %}
+    <div class="container">
+        <h1 class="my-4">Your group's top tracks are:</h1>
+        <h2 class="mb-4">Now guess whose is whose!!</h2>
+        
+        <hr>
 
-    <form method="POST" action="{{ url_for('submit_guesses') }}">
-        {% for track in tracks %}
-            <div>
-                <br>
-                <p>Track: {{ track.name }} by {{ track.artist }}</p>
-                <label for="{{ track.id }}">Who does this song belong to?</label>
-                <select name="{{ track.id }}">
-                    {% for user in users %}
-                        <option value="{{ user.id }}">{{ user.username }}</option>
-                    {% endfor %}
-                <br>
-                </select>
-            </div>
-        {% endfor %}
-        <br>
-        <button type="submit" class="btn btn-primary">Submit Guesses</button>
-    </form>
-    <br>
+        {% if correctGuesses %}
+            <h2 class="text-center">Your score: {{ correctGuesses }} / {{ totalGuesses }}</h2>
+        {% else %}
+            <h2 class="text-center">You haven't guessed yet!</h2>
+        {% endif %}
 
-    <a href="/profile">Back to profile</a>
+        <form method="POST" action="{{ url_for('submit_guesses') }}">
+            {% for track in tracks %}
+                <div class="mb-4">
+                    <p><strong>Song:</strong> {{ track.name }} by {{ track.artist }}</p>
+                    <label for="{{ track.id }}" class="form-label">Who does this song belong to?</label>
+                    <select name="{{ track.id }}" class="form-select">
+                        {% for user in users %}
+                            <option value="{{ user.id }}">{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Submit Guesses</button>
+        </form>
+        
+        <a href="/profile" class="btn btn-secondary mt-3">Back to profile</a>
+    </div>
 
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-
 </body>
 </html>

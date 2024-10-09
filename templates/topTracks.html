@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Top Tracks</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         body {
-            background-color: white; 
+            background-color: #f8f9fa;
             color: black; 
         }
         h1 {
@@ -17,7 +20,7 @@
             margin-top: 20px; 
         }
         .track-list li {
-            background-color: #f8f9fa;
+            background-color: white;
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 5px;
@@ -52,6 +55,43 @@
 </head>
 <body>
 
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/profile">Musifynder</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/create_group" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Groups
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="/create_group">Add Group</a></li>
+                        <li><a class="dropdown-item" href="/join_group">Join Group</a></li>
+                        <li><a class="dropdown-item" href="/delete_group">Delete Group</a></li>
+                    </ul>
+                </li>
+    
+                <li class="nav-item">
+                    <a class="nav-link" href="/top-tracks">Your Top Tracks</a>
+                </li>
+    
+                <li class="nav-item">
+                    <a class="nav-link" href="/group-top-songs">Your Group's Top Tracks</a>
+                </li>
+    
+                <li class="nav-item">
+                    <a class="nav-link" href="/groups_scores">Group Scores</a>
+                </li>
+    
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <h1>Your Top Tracks:</h1>
     
     <div class="container mt-5 text-center">
@@ -78,6 +118,6 @@
         <a href="/profile" class="back-link">Back to Profile</a>
     </div>
 
-    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -5,19 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-
+    <style>
+        body {
+            background-color: #f8f9fa; 
+        }
+    </style>
 </head>
 <body>
 
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="/profile">Musifynder</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/create_group" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Groups
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="/create_group">Add Group</a></li>
+                        <li><a class="dropdown-item" href="/join_group">Join Group</a></li>
+                        <li><a class="dropdown-item" href="/delete_group">Delete Group</a></li>
+                    </ul>
+                </li>
+    
+                <li class="nav-item">
+                    <a class="nav-link" href="/top-tracks">Your Top Tracks</a>
+                </li>
+    
+                <li class="nav-item">
+                    <a class="nav-link" href="/group-top-songs">Your Group's Top Tracks</a>
+                </li>
+    
+                <li class="nav-item">
+                    <a class="nav-link" href="/groups_scores">Group Scores</a>
+                </li>
+    
                 <li class="nav-item">
                     <a class="nav-link" href="/logout">Logout</a>
                 </li>
@@ -25,7 +50,6 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-6 offset-md-3">
@@ -49,6 +73,7 @@
                             <a href="/delete_group" class="btn btn-danger">Delete a group</a>
                             <a href="/join_group" class="btn btn-info">Join a group</a>
                             <a href="/group-top-songs" class="btn btn-warning">View group's top tracks</a>
+                            <a href="/groups_scores" class="btn btn-secondary">View your group's scores</a>
                         </div>
                     </div>
                     <div class="card-footer text-muted">

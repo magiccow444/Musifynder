@@ -184,6 +184,9 @@ def submit_guesses():
     user_profile = sp.current_user()
     user = User.query.filter_by(username=user_profile['display_name']).first()
 
+    user.correctGuesses = correctGuesses
+    db.session.commit()
+
     group_users = User.query.filter_by(group_id=user.group_id).all()
     group_user_ids = [group_user.id for group_user in group_users]
    
@@ -192,7 +195,19 @@ def submit_guesses():
     random.shuffle(group_tracks)
 
     return render_template('groupTopSongs.html', tracks=group_tracks, users=group_users, correctGuesses=correctGuesses, totalGuesses=totalGuesses)
-    # return f"You got {correctGuesses} out of {totalGuesses} correct!"
+
+@app.route('/groups_scores', methods=['POST', 'GET'])
+def groups_scores():
+    
+    sp = spotipy.Spotify(auth=session.get('token_info')['access_token'])
+    user_profile = sp.current_user()
+    user = User.query.filter_by(username=user_profile['display_name']).first()
+
+    group = Group.query.get(user.group_id)
+
+    users = User.query.filter_by(group_id=user.group_id).all()
+    
+    return render_template('groupScores.html', group=group, users=users)
 
 @app.route('/create_group', methods=['POST', 'GET'])
 def create_group():

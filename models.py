@@ -11,6 +11,8 @@ class User(db.Model):
 
     group = db.relationship('Group', backref=db.backref('members', lazy=True))
 
+    correctGuesses = db.Column(db.Integer, unique=False, nullable=True)
+
 class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False, unique=True)
